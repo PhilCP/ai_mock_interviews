@@ -3,10 +3,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
-import {
-  getFeedbackByInterviewId,
-  getInterviewById,
-} from "@/lib/actions/general.action";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/actions/auth.action";
 
@@ -14,13 +10,11 @@ const Feedback = async ({ params }: RouteParams) => {
   const { id } = await params;
   const user = await getCurrentUser();
 
-  const interview = await getInterviewById(id);
-  if (!interview) redirect("/");
+  // Mock interview data (remove if you add a new function to fetch it)
+  const interview = { role: "Software Engineer" };
 
-  const feedback = await getFeedbackByInterviewId({
-    interviewId: id,
-    userId: user?.id!,
-  });
+  // Mock feedback (use real API when needed)
+  const feedback = null;
 
   return (
     <section className="section-feedback">
@@ -39,7 +33,7 @@ const Feedback = async ({ params }: RouteParams) => {
             <p>
               Overall Impression:{" "}
               <span className="text-primary-200 font-bold">
-                {feedback?.totalScore}
+                {feedback?.totalScore ?? "N/A"}
               </span>
               /100
             </p>
@@ -59,38 +53,7 @@ const Feedback = async ({ params }: RouteParams) => {
 
       <hr />
 
-      <p>{feedback?.finalAssessment}</p>
-
-      {/* Interview Breakdown */}
-      <div className="flex flex-col gap-4">
-        <h2>Breakdown of the Interview:</h2>
-        {feedback?.categoryScores?.map((category, index) => (
-          <div key={index}>
-            <p className="font-bold">
-              {index + 1}. {category.name} ({category.score}/100)
-            </p>
-            <p>{category.comment}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <h3>Strengths</h3>
-        <ul>
-          {feedback?.strengths?.map((strength, index) => (
-            <li key={index}>{strength}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <h3>Areas for Improvement</h3>
-        <ul>
-          {feedback?.areasForImprovement?.map((area, index) => (
-            <li key={index}>{area}</li>
-          ))}
-        </ul>
-      </div>
+      <p>{feedback?.finalAssessment ?? "No feedback available."}</p>
 
       <div className="buttons">
         <Button className="btn-secondary flex-1">
